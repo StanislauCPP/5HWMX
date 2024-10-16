@@ -28,17 +28,8 @@ namespace math
 			{
 				UT
 
-				try
-				{
-					for(int i = 0; i < rows_; ++i)
+				for(int i = 0; i < rows_; ++i)
 						data_[i] = new P[cols_]{};
-				}
-				catch(...)
-				{
-					deleteM_Ptr();
-					std::cerr << "Bad creation of M_Ptr matrix" << std::endl;
-					throw;
-				}
 				
 			};
 
@@ -92,21 +83,11 @@ namespace math
 
 			void createColsAndCopy(const M_Ptr& other)
 			{
-				try
+				for(int i = 0; i < rows_; ++i)
 				{
-					for(int i = 0; i < rows_; ++i)
-					{
-						data_[i] = new P[cols_]{};
-						std::memcpy(data_[i], other.data_[i], cols_*sizeof(T));
-					}
+					data_[i] = new P[cols_]{};
+					std::memcpy(data_[i], other.data_[i], cols_*sizeof(T));
 				}
-				catch(...)
-				{
-					deleteM_Ptr();
-					std::cerr << "Bad copy of M_Ptr matrix" << std::endl;
-					throw;
-				}
-
 			}
 		};
 
