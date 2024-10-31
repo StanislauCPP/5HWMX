@@ -39,7 +39,7 @@ if(TESTLIB)
 	if(DET)
 		target_compile_definitions(matrix INTERFACE DET)
 
-		set(ANS -23 26 -105 1 1 2.52163 -2.52163 1.02688)
+		set(ANS -23 26 -105 1 1 2.52163 -2.52163 1.02688 7.00014)
 
 		list(LENGTH ANS LENGTHANS)
 		math(EXPR LENGTHANS ${LENGTHANS}-1)
