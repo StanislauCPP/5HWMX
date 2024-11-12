@@ -1,0 +1,13 @@
+b math::Matrix<int>::M_Ptr<int>::operator=(math::Matrix<int>::M_Ptr<int>&&)
+set logging file /home/ubuntus/CPP_PracticeEducation/5HWMX/matrix/tests/unitTest/traceLog.txt
+set logging overwrite
+set logging redirect
+set logging enabled
+command
+silent
+backtrace 1
+continue
+end
+
+run
+q

@@ -1,0 +1,4 @@
+[Thread debugging using libthread_db enabled]
+Using host libthread_db library "/lib/x86_64-linux-gnu/libthread_db.so.1".
+#0  math::Matrix<int>::M_Ptr<int>::operator= (this=0x7fffffffdc90, other=...) at /home/ubuntus/CPP_PracticeEducation/5HWMX/matrix/matrix.hpp:69
+[Inferior 1 (process 6284) exited normally]

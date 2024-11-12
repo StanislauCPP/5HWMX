@@ -6,12 +6,6 @@
 #include <type_traits>
 #include <cmath>
 
-#ifdef UNITTEST
-	#define UT	std::cout << __PRETTY_FUNCTION__ << std::endl;
-#else
-	#define UT
-#endif
-
 namespace math
 {
 	template<typename T>
@@ -24,36 +18,54 @@ namespace math
 			int cols_;
 			P **data_;
 
-			M_Ptr(int rows, int cols) : rows_{rows}, cols_{cols}, data_{new P*[rows_]{}}
+			void allocCols(P **data_m, int rowInd)
 			{
-				UT
+				try	{ data_m[rowInd] = new P[cols_]{};	}
+				catch(...)
+				{
+					for(int j = 0; j < rowInd; ++j)
+						delete[] data_m[j];
 
-				for(int i = 0; i < rows_; ++i)
-						data_[i] = new P[cols_]{};
-				
-			};
-
-			M_Ptr(const M_Ptr& other) : rows_{other.rows_}, cols_{other.cols_}, data_{new P*[rows_]{}}
-			{
-				createColsAndCopy(other);
-				
-				UT
+					delete[] data_m;
+					throw;
+				}
 			}
 
-			M_Ptr(M_Ptr&& other) noexcept : rows_{other.rows_}, cols_{other.cols_}, data_{other.data_} { UT; other.data_ = nullptr; };
+			M_Ptr(int rows, int cols) : rows_{rows}, cols_{cols}
+			{
+				P **data_tmp = new P*[rows_]{};
+
+				for(int i = 0; i < rows_; ++i)
+					allocCols(data_tmp, i);
+
+				data_ = data_tmp;
+			};
+
+			M_Ptr(const M_Ptr& other) : rows_{other.rows_}, cols_{other.cols_}
+			{
+				P **data_tmp = new P*[rows_]{};
+
+				for(int i = 0; i < rows_; ++i)
+				{
+					allocCols(data_tmp, i);
+					std::memcpy(data_tmp[i], other.data_[i], cols_*sizeof(P));
+				}
+
+				data_ = data_tmp;
+			};
+
+			M_Ptr(M_Ptr&& other) noexcept : rows_{other.rows_}, cols_{other.cols_}, data_{other.data_} { other.data_ = nullptr; };
 
 			M_Ptr& operator=(const M_Ptr& other)
 			{
 				M_Ptr tmp(other);
 				swap(tmp);
 
-				UT
 				return *this;
 			}
 
 			M_Ptr& operator=(M_Ptr&& other) noexcept
 			{
-				UT
 				if(this == &other)
 					return *this;
 				
@@ -79,15 +91,6 @@ namespace math
 				std::swap(rows_, other.rows_);
 				std::swap(cols_, other.cols_);
 				std::swap(data_, other.data_);
-			}
-
-			void createColsAndCopy(const M_Ptr& other)
-			{
-				for(int i = 0; i < rows_; ++i)
-				{
-					data_[i] = new P[cols_]{};
-					std::memcpy(data_[i], other.data_[i], cols_*sizeof(T));
-				}
 			}
 		};
 
